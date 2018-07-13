@@ -1,0 +1,43 @@
+{
+  "name": "simply/application",
+  "type": "library",
+  "description": "A simple middleware application framework based on PSR standards",
+  "keywords": [
+    "psr-15",
+    "psr-11",
+    "psr-7",
+    "framework",
+    "application"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Riikka Kalliomäki",
+      "email": "riikka.kalliomaki@gmail.com",
+      "homepage": "http://riimu.net"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "psr/http-server-middleware": "^1.0",
+    "psr/container": "^1.0",
+    "psr/http-message": "^1.0",
+    "http-interop/http-factory": "dev-master",
+    "simply/router": "^0.2.2",
+    "simply/container": "^0.1.0",
+    "zendframework/zend-diactoros": "^1.8"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Simply\\Application\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Simply\\Application\\": "tests/tests/"
+    }
+  }
+}
