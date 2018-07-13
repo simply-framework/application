@@ -31,6 +31,6 @@ class ServerApi
 
     public function isConnectionAborted(): bool
     {
-        return connection_status() === CONNECTION_NORMAL;
+        return connection_status() !== \CONNECTION_NORMAL;
     }
 }

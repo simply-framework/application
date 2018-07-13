@@ -6,7 +6,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Simply\Application\HttpFactory\HttpFactoryInterface;
-use Zend\Diactoros\Response\TextResponse;
 
 /**
  * NotFoundHandler.

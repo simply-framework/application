@@ -131,8 +131,9 @@ class ApplicationTest extends TestCase
             return $this->getResponse('Handler');
         });
 
-        $middleware = new class implements MiddlewareInterface {
-            public function process(Request $request, RequestHandlerInterface $handler): Response {
+        $middleware = new class() implements MiddlewareInterface {
+            public function process(Request $request, RequestHandlerInterface $handler): Response
+            {
                 return $handler->handle($request)->withHeader('Custom-Header', 'header-value');
             }
         };
@@ -187,7 +188,6 @@ class ApplicationTest extends TestCase
         $client = $this->getHttpClient(true, true);
         $client->setResponseChunkSize(3);
 
-        /** @var HttpClient $client */
         unset($this->container[HttpClient::class]);
         $this->container[HttpClient::class] = $client;
 
@@ -284,7 +284,6 @@ class ApplicationTest extends TestCase
 
     private function getHttpClient($headersSent = false, $connectionAborted = false): HttpClient
     {
-        /** @var MockObject|ServerApi $system */
         $this->serverApi = $this->createMock(ServerApi::class);
         $this->serverApi->method('isHeadersSent')->willReturn($headersSent);
         $this->serverApi->method('sendHeaderLine')->willReturnCallback(function (string $line): void {
@@ -340,7 +339,7 @@ class ApplicationTest extends TestCase
 
         if ($headers === null) {
             $headers = [
-                'Content-Type' => 'text/plain; charset=utf-8'
+                'Content-Type' => 'text/plain; charset=utf-8',
             ];
         }
 

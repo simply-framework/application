@@ -98,5 +98,4 @@ class DiactorosHttpFactory implements HttpFactoryInterface
     {
         return new Uri($uri);
     }
-
 }
