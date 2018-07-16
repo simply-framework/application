@@ -22,9 +22,9 @@ use Simply\Router\Router;
 class ApplicationProvider extends AbstractEntryProvider
 {
     /**
-     * Returns the configuration web application.
+     * Returns the configured web application.
      * @param ContainerInterface $container The container used to resolve dependencies
-     * @return Application the configuration web application.
+     * @return Application The configured web application
      */
     public function getApplication(ContainerInterface $container): Application
     {
