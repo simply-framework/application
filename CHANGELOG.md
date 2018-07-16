@@ -10,4 +10,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial development release
 
-[Unreleased]: https://github.com/simply-framework/router/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/simply-framework/application/compare/v0.1.0...HEAD
