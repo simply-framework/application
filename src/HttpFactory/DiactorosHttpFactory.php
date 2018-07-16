@@ -17,13 +17,14 @@ use Zend\Diactoros\UploadedFile;
 use Zend\Diactoros\Uri;
 
 /**
- * DiactorosHttpFactory.
+ * A http factory that uses Zend's Diactoros library to implement the requests and responses.
  * @author Riikka Kalliomäki <riikka.kalliomaki@gmail.com>
  * @copyright Copyright (c) 2018 Riikka Kalliomäki
  * @license http://opensource.org/licenses/mit-license.php MIT License
  */
 class DiactorosHttpFactory implements HttpFactoryInterface
 {
+    /** {@inheritdoc} */
     public function createRequest(string $method, $uri): RequestInterface
     {
         if (!$uri instanceof UriInterface) {
@@ -33,12 +34,14 @@ class DiactorosHttpFactory implements HttpFactoryInterface
         return new Request($uri, $method);
     }
 
+    /** {@inheritdoc} */
     public function createResponse(int $code = 200, string $reasonPhrase = ''): ResponseInterface
     {
         return (new Response())
             ->withStatus($code, $reasonPhrase);
     }
 
+    /** {@inheritdoc} */
     public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
     {
         if (!$uri instanceof UriInterface) {
@@ -48,11 +51,13 @@ class DiactorosHttpFactory implements HttpFactoryInterface
         return new ServerRequest($serverParams, [], $uri, $method);
     }
 
+    /** {@inheritdoc} */
     public function createServerRequestFromGlobals(): ServerRequestInterface
     {
         return ServerRequestFactory::fromGlobals();
     }
 
+    /** {@inheritdoc} */
     public function createStream(string $content = ''): StreamInterface
     {
         $stream = new Stream('php://temp', 'wb+');
@@ -62,11 +67,13 @@ class DiactorosHttpFactory implements HttpFactoryInterface
         return $stream;
     }
 
+    /** {@inheritdoc} */
     public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
     {
         return new Stream($filename, $mode);
     }
 
+    /** {@inheritdoc} */
     public function createStreamFromResource($resource): StreamInterface
     {
         if (!\is_resource($resource)) {
@@ -76,6 +83,7 @@ class DiactorosHttpFactory implements HttpFactoryInterface
         return new Stream($resource);
     }
 
+    /** {@inheritdoc} */
     public function createUploadedFile(
         StreamInterface $stream,
         int $size = null,
@@ -94,6 +102,7 @@ class DiactorosHttpFactory implements HttpFactoryInterface
         return new UploadedFile($stream, $size, $error, $clientFilename, $clientMediaType);
     }
 
+    /** {@inheritdoc} */
     public function createUri(string $uri = ''): UriInterface
     {
         return new Uri($uri);

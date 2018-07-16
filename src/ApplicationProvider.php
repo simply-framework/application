@@ -14,7 +14,7 @@ use Simply\Container\AbstractEntryProvider;
 use Simply\Router\Router;
 
 /**
- * ApplicationProvider.
+ * Provides the default dependencies required by the application.
  * @author Riikka Kalliomäki <riikka.kalliomaki@gmail.com>
  * @copyright Copyright (c) 2018 Riikka Kalliomäki
  * @license http://opensource.org/licenses/mit-license.php MIT License

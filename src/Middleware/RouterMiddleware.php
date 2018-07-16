@@ -15,17 +15,28 @@ use Simply\Router\Route;
 use Simply\Router\Router;
 
 /**
- * RouterMiddleware.
+ * Routing middleware that uses router to point requests to appropriate handlers.
  * @author Riikka Kalliomäki <riikka.kalliomaki@gmail.com>
  * @copyright Copyright (c) 2018 Riikka Kalliomäki
  * @license http://opensource.org/licenses/mit-license.php MIT License
  */
 class RouterMiddleware implements MiddlewareInterface
 {
+    /** @var ContainerInterface Container used to load handlers and additional middleware */
     private $container;
+
+    /** @var Router The router used to map requests to handlers */
     private $router;
+
+    /** @var HttpFactoryInterface The http factory used to generate error responses */
     private $httpFactory;
 
+    /**
+     * RouterMiddleware constructor.
+     * @param Router $router The router used to map requests to handlers
+     * @param ContainerInterface $container Container used to load handlers and additional middleware
+     * @param HttpFactoryInterface $factory The http factory used to generate error responses
+     */
     public function __construct(Router $router, ContainerInterface $container, HttpFactoryInterface $factory)
     {
         $this->router = $router;
@@ -33,6 +44,7 @@ class RouterMiddleware implements MiddlewareInterface
         $this->httpFactory = $factory;
     }
 
+    /** {@inheritdoc} */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $uri = $request->getUri();
@@ -57,6 +69,12 @@ class RouterMiddleware implements MiddlewareInterface
         return $this->dispatch($route, $request);
     }
 
+    /**
+     * Dispatches the given route for the given request.
+     * @param Route $route The route to dispatch
+     * @param ServerRequestInterface $request The request to provide for the dispatched route
+     * @return ResponseInterface The response result from the route
+     */
     private function dispatch(Route $route, ServerRequestInterface $request): ResponseInterface
     {
         foreach ($route->getParameters() as $name => $value) {
@@ -78,11 +96,21 @@ class RouterMiddleware implements MiddlewareInterface
         return $stack->handle($request);
     }
 
+    /**
+     * Loads the request handler from the container.
+     * @param string $name The name of the dependency to load
+     * @return RequestHandlerInterface The request handler loaded from the container
+     */
     private function getHandler(string $name): RequestHandlerInterface
     {
         return $this->container->get($name);
     }
 
+    /**
+     * Loads a middleware from the container.
+     * @param string $name The name of the dependency
+     * @return MiddlewareInterface The middleware loaded from the container
+     */
     private function getMiddleware(string $name): MiddlewareInterface
     {
         return $this->container->get($name);

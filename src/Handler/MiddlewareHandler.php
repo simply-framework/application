@@ -8,36 +8,47 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * MiddlewareStack.
+ * A middleware stack that acts like a request handler.
  * @author Riikka Kalliomäki <riikka.kalliomaki@gmail.com>
  * @copyright Copyright (c) 2018 Riikka Kalliomäki
  * @license http://opensource.org/licenses/mit-license.php MIT License
  */
 class MiddlewareHandler implements RequestHandlerInterface
 {
-    /** @var MiddlewareInterface[] */
+    /** @var MiddlewareInterface[] List of middlewares to call */
     private $stack;
 
-    /** @var RequestHandlerInterface */
+    /** @var RequestHandlerInterface The fallback request handler */
     private $fallback;
 
+    /**
+     * MiddlewareHandler constructor.
+     * @param RequestHandlerInterface $fallback The fallback request handler to call
+     */
     public function __construct(RequestHandlerInterface $fallback)
     {
         $this->stack = [];
         $this->fallback = $fallback;
     }
 
-    public function push(MiddlewareInterface $middleware)
+    /**
+     * Adds a new middleware to the stack.
+     * @param MiddlewareInterface $middleware Additional middleware to add to the stack
+     */
+    public function push(MiddlewareInterface $middleware): void
     {
         $this->stack[] = $middleware;
     }
 
+    /** {@inheritdoc} */
     public function handle(Request $request): Response
     {
         $stack = $this->stack;
+
         $handler = new CallbackHandler(function (Request $request) use (& $stack, & $handler): Response {
-            if ($stack) {
-                $middleware = array_shift($stack);
+            $middleware = array_shift($stack);
+
+            if ($middleware instanceof MiddlewareInterface) {
                 return $middleware->process($request, $handler);
             }
 

@@ -8,20 +8,26 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Simply\Application\HttpFactory\HttpFactoryInterface;
 
 /**
- * NotFoundHandler.
+ * A simple handler that sends a 404 response.
  * @author Riikka Kalliomäki <riikka.kalliomaki@gmail.com>
  * @copyright Copyright (c) 2018 Riikka Kalliomäki
  * @license http://opensource.org/licenses/mit-license.php MIT License
  */
 class NotFoundHandler implements RequestHandlerInterface
 {
+    /** @var HttpFactoryInterface The factory used to generate the response */
     private $httpFactory;
 
+    /**
+     * NotFoundHandler constructor.
+     * @param HttpFactoryInterface $factory The factory use to generate the response
+     */
     public function __construct(HttpFactoryInterface $factory)
     {
         $this->httpFactory = $factory;
     }
 
+    /** {@inheritdoc} */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return $this->httpFactory->createResponse(404, 'Not Found')

@@ -11,7 +11,7 @@ use Interop\Http\Factory\UriFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * HttpFactoryInterface.
+ * A union interface for http factory interop interfaces.
  * @author Riikka Kalliomäki <riikka.kalliomaki@gmail.com>
  * @copyright Copyright (c) 2018 Riikka Kalliomäki
  * @license http://opensource.org/licenses/mit-license.php MIT License
@@ -24,5 +24,9 @@ interface HttpFactoryInterface extends
     UploadedFileFactoryInterface,
     UriFactoryInterface
 {
+    /**
+     * Generates a server request from the globals.
+     * @return ServerRequestInterface A server request generated from the globals
+     */
     public function createServerRequestFromGlobals(): ServerRequestInterface;
 }
