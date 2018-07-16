@@ -20,7 +20,7 @@ class ServerApi
     }
 
     /**
-     * Sets a header line to be sent to the browser.
+     * Adds a header line to be sent to the browser.
      * @param string $line The header line to send to browser
      * @codeCoverageIgnore
      */
