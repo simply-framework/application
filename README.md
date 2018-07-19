@@ -1,5 +1,10 @@
 # Middleware Application Framework
 
+[![Travis](https://img.shields.io/travis/simply-framework/application.svg?style=flat-square)](https://travis-ci.org/simply-framework/application)
+[![Scrutinizer](https://img.shields.io/scrutinizer/g/simply-framework/application.svg?style=flat-square)](https://scrutinizer-ci.com/g/simply-framework/application/)
+[![Scrutinizer Coverage](https://img.shields.io/scrutinizer/coverage/g/simply-framework/application.svg?style=flat-square)](https://scrutinizer-ci.com/g/simply-framework/application/)
+[![Packagist](https://img.shields.io/packagist/v/simply/application.svg?style=flat-square)](https://packagist.org/packages/simply/application)
+
 This package provides a bare-bones middleware framework that implements the different PSR standards and
 takes advantage of the Simply Router and Container to create a coherent whole.
 
