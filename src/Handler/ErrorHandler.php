@@ -2,10 +2,11 @@
 
 namespace Simply\Application\Handler;
 
+use Interop\Http\Factory\ResponseFactoryInterface;
+use Interop\Http\Factory\StreamFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Simply\Application\HttpFactory\HttpFactoryInterface;
 
 /**
  * A simple handler that sends a 500 error response.
@@ -15,23 +16,28 @@ use Simply\Application\HttpFactory\HttpFactoryInterface;
  */
 class ErrorHandler implements RequestHandlerInterface
 {
-    /** @var HttpFactoryInterface The http factory used to generate the response */
-    private $httpFactory;
+    /** @var ResponseFactoryInterface The factory used to generate the response */
+    private $responseFactory;
+
+    /** @var StreamFactoryInterface The factory used to generate the body for the response */
+    private $streamFactory;
 
     /**
-     * ErrorHandler constructor.
-     * @param HttpFactoryInterface $factory The http factory used to generate the response
+     * NotFoundHandler constructor.
+     * @param ResponseFactoryInterface $responseFactory The factory used to generate the response
+     * @param StreamFactoryInterface $streamFactory The factory used to generate the body for the response
      */
-    public function __construct(HttpFactoryInterface $factory)
+    public function __construct(ResponseFactoryInterface $responseFactory, StreamFactoryInterface $streamFactory)
     {
-        $this->httpFactory = $factory;
+        $this->responseFactory = $responseFactory;
+        $this->streamFactory = $streamFactory;
     }
 
     /** {@inheritdoc} */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->httpFactory->createResponse(500, 'Internal Server Error')
+        return $this->responseFactory->createResponse(500, 'Internal Server Error')
             ->withHeader('Content-Type', 'text/plain; charset=utf-8')
-            ->withBody($this->httpFactory->createStream('Internal Server Error'));
+            ->withBody($this->streamFactory->createStream('Internal Server Error'));
     }
 }

@@ -2,6 +2,12 @@
 
 namespace Simply\Application;
 
+use Interop\Http\Factory\RequestFactoryInterface;
+use Interop\Http\Factory\ResponseFactoryInterface;
+use Interop\Http\Factory\ServerRequestFactoryInterface;
+use Interop\Http\Factory\StreamFactoryInterface;
+use Interop\Http\Factory\UploadedFileFactoryInterface;
+use Interop\Http\Factory\UriFactoryInterface;
 use Psr\Container\ContainerInterface;
 use Simply\Application\Handler\ErrorHandler;
 use Simply\Application\Handler\MiddlewareHandler;
@@ -66,7 +72,10 @@ class ApplicationProvider extends AbstractEntryProvider
      */
     public function getNotFoundHandler(ContainerInterface $container): NotFoundHandler
     {
-        return new NotFoundHandler($container->get(HttpFactoryInterface::class));
+        return new NotFoundHandler(
+            $container->get(ResponseFactoryInterface::class),
+            $container->get(StreamFactoryInterface::class)
+        );
     }
 
     /**
@@ -89,7 +98,8 @@ class ApplicationProvider extends AbstractEntryProvider
     public function getErrorHandler(ContainerInterface $container): ErrorHandler
     {
         return new ErrorHandler(
-            $container->get(HttpFactoryInterface::class)
+            $container->get(ResponseFactoryInterface::class),
+            $container->get(StreamFactoryInterface::class)
         );
     }
 
@@ -103,7 +113,8 @@ class ApplicationProvider extends AbstractEntryProvider
         return new RouterMiddleware(
             $container->get(Router::class),
             $container,
-            $container->get(HttpFactoryInterface::class)
+            $container->get(ResponseFactoryInterface::class),
+            $container->get(StreamFactoryInterface::class)
         );
     }
 
@@ -114,5 +125,61 @@ class ApplicationProvider extends AbstractEntryProvider
     public function getHttpClient(): HttpClient
     {
         return new HttpClient();
+    }
+
+    /**
+     * Returns the Http factory for the purpose of filling the standard.
+     * @param ContainerInterface $container The container used to resolve dependencies
+     * @return RequestFactoryInterface
+     */
+    public function getRequestFactory(ContainerInterface $container): RequestFactoryInterface
+    {
+        return $container->get(HttpFactoryInterface::class);
+    }
+
+    /**
+     * Returns the standard Response Factory.
+     * @param ContainerInterface $container The container used to resolve dependencies
+     * @return ResponseFactoryInterface
+     */
+    public function getResponseFactory(ContainerInterface $container): ResponseFactoryInterface
+    {
+        return $container->get(HttpFactoryInterface::class);
+    }
+
+    /**
+     * @param ContainerInterface $container The container used to resolve dependencies
+     * @return ServerRequestFactoryInterface
+     */
+    public function getServerRequestFactory(ContainerInterface $container): ServerRequestFactoryInterface
+    {
+        return $container->get(HttpFactoryInterface::class);
+    }
+
+    /**
+     * @param ContainerInterface $container The container used to resolve dependencies
+     * @return StreamFactoryInterface
+     */
+    public function getStreamFactory(ContainerInterface $container): StreamFactoryInterface
+    {
+        return $container->get(HttpFactoryInterface::class);
+    }
+
+    /**
+     * @param ContainerInterface $container The container used to resolve dependencies
+     * @return UploadedFileFactoryInterface
+     */
+    public function getUploadedFileFactory(ContainerInterface $container): UploadedFileFactoryInterface
+    {
+        return $container->get(HttpFactoryInterface::class);
+    }
+
+    /**
+     * @param ContainerInterface $container The container used to resolve dependencies
+     * @return UriFactoryInterface
+     */
+    public function getUriFactory(ContainerInterface $container): UriFactoryInterface
+    {
+        return $container->get(HttpFactoryInterface::class);
     }
 }

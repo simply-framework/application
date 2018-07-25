@@ -2,10 +2,11 @@
 
 namespace Simply\Application\Handler;
 
+use Interop\Http\Factory\ResponseFactoryInterface;
+use Interop\Http\Factory\StreamFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Simply\Application\HttpFactory\HttpFactoryInterface;
 
 /**
  * A simple handler that sends a 404 response.
@@ -15,23 +16,28 @@ use Simply\Application\HttpFactory\HttpFactoryInterface;
  */
 class NotFoundHandler implements RequestHandlerInterface
 {
-    /** @var HttpFactoryInterface The factory used to generate the response */
-    private $httpFactory;
+    /** @var ResponseFactoryInterface The factory used to generate the response */
+    private $responseFactory;
+
+    /** @var StreamFactoryInterface The factory used to generate the body for the response */
+    private $streamFactory;
 
     /**
      * NotFoundHandler constructor.
-     * @param HttpFactoryInterface $factory The factory use to generate the response
+     * @param ResponseFactoryInterface $responseFactory The factory used to generate the response
+     * @param StreamFactoryInterface $streamFactory The factory used to generate the body for the response
      */
-    public function __construct(HttpFactoryInterface $factory)
+    public function __construct(ResponseFactoryInterface $responseFactory, StreamFactoryInterface $streamFactory)
     {
-        $this->httpFactory = $factory;
+        $this->responseFactory = $responseFactory;
+        $this->streamFactory = $streamFactory;
     }
 
     /** {@inheritdoc} */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->httpFactory->createResponse(404, 'Not Found')
+        return $this->responseFactory->createResponse(404, 'Not Found')
             ->withHeader('Content-Type', 'text/plain; charset=utf-8')
-            ->withBody($this->httpFactory->createStream('Not Found'));
+            ->withBody($this->streamFactory->createStream('Not Found'));
     }
 }

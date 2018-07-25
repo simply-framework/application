@@ -2,13 +2,14 @@
 
 namespace Simply\Application\Middleware;
 
+use Interop\Http\Factory\ResponseFactoryInterface;
+use Interop\Http\Factory\StreamFactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Simply\Application\Handler\MiddlewareHandler;
-use Simply\Application\HttpFactory\HttpFactoryInterface;
 use Simply\Router\Exception\MethodNotAllowedException;
 use Simply\Router\Exception\RouteNotFoundException;
 use Simply\Router\Route;
@@ -28,20 +29,29 @@ class RouterMiddleware implements MiddlewareInterface
     /** @var Router The router used to map requests to handlers */
     private $router;
 
-    /** @var HttpFactoryInterface The http factory used to generate error responses */
-    private $httpFactory;
+    /** @var ResponseFactoryInterface The http factory used to generate error responses */
+    private $responseFactory;
+
+    /** @var StreamFactoryInterface The http factory used to generate error bodies */
+    private $streamFactory;
 
     /**
      * RouterMiddleware constructor.
      * @param Router $router The router used to map requests to handlers
      * @param ContainerInterface $container Container used to load handlers and additional middleware
-     * @param HttpFactoryInterface $factory The http factory used to generate error responses
+     * @param ResponseFactoryInterface $responseFactory The http factory used to generate error responses
+     * @param StreamFactoryInterface $streamFactory The http factory used to generate error bodies
      */
-    public function __construct(Router $router, ContainerInterface $container, HttpFactoryInterface $factory)
-    {
+    public function __construct(
+        Router $router,
+        ContainerInterface $container,
+        ResponseFactoryInterface $responseFactory,
+        StreamFactoryInterface $streamFactory
+    ) {
         $this->router = $router;
         $this->container = $container;
-        $this->httpFactory = $factory;
+        $this->responseFactory = $responseFactory;
+        $this->streamFactory = $streamFactory;
     }
 
     /** {@inheritdoc} */
@@ -53,16 +63,16 @@ class RouterMiddleware implements MiddlewareInterface
         try {
             $route = $this->router->route($request->getMethod(), $path);
         } catch (MethodNotAllowedException $exception) {
-            return $this->httpFactory->createResponse(405, 'Method Not Allowed')
+            return $this->responseFactory->createResponse(405, 'Method Not Allowed')
                 ->withHeader('Allow', implode(', ', $exception->getAllowedMethods()))
                 ->withHeader('Content-Type', 'text/plain; charset=utf-8')
-                ->withBody($this->httpFactory->createStream('Method Not Allowed'));
+                ->withBody($this->streamFactory->createStream('Method Not Allowed'));
         } catch (RouteNotFoundException $exception) {
             return $handler->handle($request);
         }
 
         if ($request->getMethod() === 'GET' && $route->getPath() !== $path) {
-            return $this->httpFactory->createResponse(302, 'Found')
+            return $this->responseFactory->createResponse(302, 'Found')
                 ->withHeader('Location', (string) $uri->withPath($route->getUrl()));
         }
 
