@@ -128,9 +128,9 @@ class ApplicationProvider extends AbstractEntryProvider
     }
 
     /**
-     * Returns the Http factory for the purpose of filling the standard.
+     * Returns the standard Request factory.
      * @param ContainerInterface $container The container used to resolve dependencies
-     * @return RequestFactoryInterface
+     * @return RequestFactoryInterface The standard Request factory
      */
     public function getRequestFactory(ContainerInterface $container): RequestFactoryInterface
     {
@@ -140,7 +140,7 @@ class ApplicationProvider extends AbstractEntryProvider
     /**
      * Returns the standard Response Factory.
      * @param ContainerInterface $container The container used to resolve dependencies
-     * @return ResponseFactoryInterface
+     * @return ResponseFactoryInterface The standard Response Factory
      */
     public function getResponseFactory(ContainerInterface $container): ResponseFactoryInterface
     {
@@ -148,8 +148,9 @@ class ApplicationProvider extends AbstractEntryProvider
     }
 
     /**
+     * Returns the standard ServerRequest Factory.
      * @param ContainerInterface $container The container used to resolve dependencies
-     * @return ServerRequestFactoryInterface
+     * @return ServerRequestFactoryInterface The standard ServerRequest Factory
      */
     public function getServerRequestFactory(ContainerInterface $container): ServerRequestFactoryInterface
     {
@@ -157,8 +158,9 @@ class ApplicationProvider extends AbstractEntryProvider
     }
 
     /**
+     * Returns the standard Stream Factory.
      * @param ContainerInterface $container The container used to resolve dependencies
-     * @return StreamFactoryInterface
+     * @return StreamFactoryInterface The standard Stream Factory
      */
     public function getStreamFactory(ContainerInterface $container): StreamFactoryInterface
     {
@@ -166,8 +168,9 @@ class ApplicationProvider extends AbstractEntryProvider
     }
 
     /**
+     * Returns the standard UploadedFile Factory.
      * @param ContainerInterface $container The container used to resolve dependencies
-     * @return UploadedFileFactoryInterface
+     * @return UploadedFileFactoryInterface The standard UploadedFile Factory
      */
     public function getUploadedFileFactory(ContainerInterface $container): UploadedFileFactoryInterface
     {
@@ -175,8 +178,9 @@ class ApplicationProvider extends AbstractEntryProvider
     }
 
     /**
+     * Returns the standard Uri Factory.
      * @param ContainerInterface $container The container used to resolve dependencies
-     * @return UriFactoryInterface
+     * @return UriFactoryInterface The standard Uri Factory
      */
     public function getUriFactory(ContainerInterface $container): UriFactoryInterface
     {
