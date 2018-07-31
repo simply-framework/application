@@ -2,11 +2,11 @@
 
 namespace Simply\Application;
 
-use Interop\Http\Factory\RequestFactoryInterface;
-use Interop\Http\Factory\ServerRequestFactoryInterface;
-use Interop\Http\Factory\UploadedFileFactoryInterface;
-use Interop\Http\Factory\UriFactoryInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ServerRequestFactoryInterface;
+use Psr\Http\Message\UploadedFileFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use Simply\Container\ContainerBuilder;
 
 /**

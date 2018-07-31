@@ -2,16 +2,16 @@
 
 namespace Simply\Application\HttpFactory;
 
-use Interop\Http\Factory\RequestFactoryInterface;
-use Interop\Http\Factory\ResponseFactoryInterface;
-use Interop\Http\Factory\ServerRequestFactoryInterface;
-use Interop\Http\Factory\StreamFactoryInterface;
-use Interop\Http\Factory\UploadedFileFactoryInterface;
-use Interop\Http\Factory\UriFactoryInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\UploadedFileFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
 
 /**
- * A union interface for http factory interop interfaces.
+ * A union interface for http factory standard interfaces.
  * @author Riikka Kalliomäki <riikka.kalliomaki@gmail.com>
  * @copyright Copyright (c) 2018 Riikka Kalliomäki
  * @license http://opensource.org/licenses/mit-license.php MIT License
