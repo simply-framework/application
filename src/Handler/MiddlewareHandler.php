@@ -15,7 +15,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class MiddlewareHandler implements RequestHandlerInterface
 {
-    /** @var MiddlewareInterface[] List of middlewares to call */
+    /** @var MiddlewareInterface[] List of middleware instances to call */
     private $stack;
 
     /** @var RequestHandlerInterface The fallback request handler */
