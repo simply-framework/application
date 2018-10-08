@@ -3,7 +3,6 @@
 namespace Simply\Application\HttpFactory;
 
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\StreamInterface;
 
 /**
  * DiactorosHttpTest.

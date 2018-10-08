@@ -4,7 +4,6 @@ namespace Simply\Application;
 
 use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\Stream;
 
 /**
  * HttpClientTest.
