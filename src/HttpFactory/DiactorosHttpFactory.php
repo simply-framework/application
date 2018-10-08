@@ -8,13 +8,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
-use Zend\Diactoros\Request;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequest;
+use Zend\Diactoros\RequestFactory;
+use Zend\Diactoros\ResponseFactory;
 use Zend\Diactoros\ServerRequestFactory;
-use Zend\Diactoros\Stream;
-use Zend\Diactoros\UploadedFile;
-use Zend\Diactoros\Uri;
+use Zend\Diactoros\StreamFactory;
+use Zend\Diactoros\UploadedFileFactory;
+use Zend\Diactoros\UriFactory;
 
 /**
  * A http factory that uses Zend's Diactoros library to implement the requests and responses.
@@ -24,31 +23,39 @@ use Zend\Diactoros\Uri;
  */
 class DiactorosHttpFactory implements HttpFactoryInterface
 {
+    private $requestFactory;
+    private $responseFactory;
+    private $serverRequestFactory;
+    private $streamFactory;
+    private $uploadedFileFactory;
+    private $uriFactory;
+
+    public function __construct()
+    {
+        $this->requestFactory = new RequestFactory();
+        $this->responseFactory = new ResponseFactory();
+        $this->serverRequestFactory = new ServerRequestFactory();
+        $this->streamFactory = new StreamFactory();
+        $this->uploadedFileFactory = new UploadedFileFactory();
+        $this->uriFactory = new UriFactory();
+    }
+
     /** {@inheritdoc} */
     public function createRequest(string $method, $uri): RequestInterface
     {
-        if (!$uri instanceof UriInterface) {
-            $uri = $this->createUri($uri);
-        }
-
-        return new Request($uri, $method);
+        return $this->requestFactory->createRequest($method, $uri);
     }
 
     /** {@inheritdoc} */
     public function createResponse(int $code = 200, string $reasonPhrase = ''): ResponseInterface
     {
-        return (new Response())
-            ->withStatus($code, $reasonPhrase);
+        return $this->responseFactory->createResponse($code, $reasonPhrase);
     }
 
     /** {@inheritdoc} */
     public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
     {
-        if (!$uri instanceof UriInterface) {
-            $uri = $this->createUri($uri);
-        }
-
-        return new ServerRequest($serverParams, [], $uri, $method);
+        return $this->serverRequestFactory->createServerRequest($method, $uri, $serverParams);
     }
 
     /** {@inheritdoc} */
@@ -60,27 +67,19 @@ class DiactorosHttpFactory implements HttpFactoryInterface
     /** {@inheritdoc} */
     public function createStream(string $content = ''): StreamInterface
     {
-        $stream = new Stream('php://temp', 'wb+');
-        $stream->write($content);
-        $stream->rewind();
-
-        return $stream;
+        return $this->streamFactory->createStream($content);
     }
 
     /** {@inheritdoc} */
     public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
     {
-        return new Stream($filename, $mode);
+        return $this->streamFactory->createStreamFromFile($filename, $mode);
     }
 
     /** {@inheritdoc} */
     public function createStreamFromResource($resource): StreamInterface
     {
-        if (!\is_resource($resource)) {
-            throw new \InvalidArgumentException('Unexpected argument type, expected a resource');
-        }
-
-        return new Stream($resource);
+        return $this->streamFactory->createStreamFromResource($resource);
     }
 
     /** {@inheritdoc} */
@@ -91,20 +90,13 @@ class DiactorosHttpFactory implements HttpFactoryInterface
         string $clientFilename = null,
         string $clientMediaType = null
     ): UploadedFileInterface {
-        if ($size === null) {
-            $size = $stream->getSize();
-
-            if ($size === null) {
-                throw new \RuntimeException('Cannot determine the size of the uploaded file');
-            }
-        }
-
-        return new UploadedFile($stream, $size, $error, $clientFilename, $clientMediaType);
+        return $this->uploadedFileFactory
+            ->createUploadedFile($stream, $size, $error, $clientFilename, $clientMediaType);
     }
 
     /** {@inheritdoc} */
     public function createUri(string $uri = ''): UriInterface
     {
-        return new Uri($uri);
+        return $this->uriFactory->createUri($uri);
     }
 }

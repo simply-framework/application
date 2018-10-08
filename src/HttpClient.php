@@ -109,7 +109,7 @@ class HttpClient
     {
         if ($response->hasHeader('Content-Length')) {
             $lengthHeader = $response->getHeader('Content-Length');
-            return (int) array_shift($lengthHeader);
+            return array_shift($lengthHeader);
         }
 
         return $response->getBody()->getSize();

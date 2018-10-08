@@ -57,15 +57,4 @@ class DiactorosHttpTest extends TestCase
         $file = $factory->createUploadedFile($factory->createStreamFromFile(__FILE__));
         $this->assertSame(filesize(__FILE__), $file->getSize());
     }
-
-    public function testCreateUploadedFileWithUnknownSize()
-    {
-        $factory = new DiactorosHttpFactory();
-
-        $stream = $this->createMock(StreamInterface::class);
-        $stream->method('getSize')->willReturn(null);
-
-        $this->expectException(\RuntimeException::class);
-        $factory->createUploadedFile($stream);
-    }
 }
