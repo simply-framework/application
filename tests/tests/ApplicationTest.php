@@ -206,14 +206,14 @@ class ApplicationTest extends TestCase
 
     public function testSmallRewindedBody()
     {
-        $stream = fopen('php://memory', 'wb+');
+        $stream = fopen('php://memory', 'w+b');
         fwrite($stream, '0');
 
         $response = (new ResponseFactory())->createResponse()
             ->withBody((new StreamFactory())->createStreamFromResource($stream));
 
         $this->buildApplication([
-            ['GET', '/path/', $this->getHandler($response)]
+            ['GET', '/path/', $this->getHandler($response)],
         ]);
 
         $this->makeRequest('GET', '/path/');
