@@ -18,6 +18,12 @@ use Simply\Application\Middleware\ErrorHandlerMiddleware;
 use Simply\Application\Middleware\RouterMiddleware;
 use Simply\Container\AbstractEntryProvider;
 use Simply\Router\Router;
+use Zend\Diactoros\RequestFactory;
+use Zend\Diactoros\ResponseFactory;
+use Zend\Diactoros\ServerRequestFactory;
+use Zend\Diactoros\StreamFactory;
+use Zend\Diactoros\UploadedFileFactory;
+use Zend\Diactoros\UriFactory;
 
 /**
  * Provides the default dependencies required by the application.
@@ -39,15 +45,6 @@ class ApplicationProvider extends AbstractEntryProvider
             $container->get(MiddlewareHandler::class),
             $container->get(HttpClient::class)
         );
-    }
-
-    /**
-     * Returns the factory used create requests and responses.
-     * @return HttpFactoryInterface The factory for creating requests and responses
-     */
-    public function getHttpFactory(): HttpFactoryInterface
-    {
-        return new DiactorosHttpFactory();
     }
 
     /**
@@ -128,62 +125,65 @@ class ApplicationProvider extends AbstractEntryProvider
     }
 
     /**
+     * Returns the factory used create requests and responses.
+     * @return HttpFactoryInterface The factory for creating requests and responses
+     */
+    public function getHttpFactory(): HttpFactoryInterface
+    {
+        return new DiactorosHttpFactory();
+    }
+
+    /**
      * Returns the standard Request factory.
-     * @param ContainerInterface $container The container used to resolve dependencies
      * @return RequestFactoryInterface The standard Request factory
      */
-    public function getRequestFactory(ContainerInterface $container): RequestFactoryInterface
+    public function getRequestFactory(): RequestFactoryInterface
     {
-        return $container->get(HttpFactoryInterface::class);
+        return new RequestFactory();
     }
 
     /**
      * Returns the standard Response Factory.
-     * @param ContainerInterface $container The container used to resolve dependencies
      * @return ResponseFactoryInterface The standard Response Factory
      */
-    public function getResponseFactory(ContainerInterface $container): ResponseFactoryInterface
+    public function getResponseFactory(): ResponseFactoryInterface
     {
-        return $container->get(HttpFactoryInterface::class);
+        return new ResponseFactory();
     }
 
     /**
      * Returns the standard ServerRequest Factory.
-     * @param ContainerInterface $container The container used to resolve dependencies
      * @return ServerRequestFactoryInterface The standard ServerRequest Factory
      */
-    public function getServerRequestFactory(ContainerInterface $container): ServerRequestFactoryInterface
+    public function getServerRequestFactory(): ServerRequestFactoryInterface
     {
-        return $container->get(HttpFactoryInterface::class);
+        return new ServerRequestFactory();
     }
 
     /**
      * Returns the standard Stream Factory.
-     * @param ContainerInterface $container The container used to resolve dependencies
      * @return StreamFactoryInterface The standard Stream Factory
      */
-    public function getStreamFactory(ContainerInterface $container): StreamFactoryInterface
+    public function getStreamFactory(): StreamFactoryInterface
     {
-        return $container->get(HttpFactoryInterface::class);
+        return new StreamFactory();
     }
 
     /**
      * Returns the standard UploadedFile Factory.
-     * @param ContainerInterface $container The container used to resolve dependencies
      * @return UploadedFileFactoryInterface The standard UploadedFile Factory
      */
-    public function getUploadedFileFactory(ContainerInterface $container): UploadedFileFactoryInterface
+    public function getUploadedFileFactory(): UploadedFileFactoryInterface
     {
-        return $container->get(HttpFactoryInterface::class);
+        return new UploadedFileFactory();
     }
 
     /**
      * Returns the standard Uri Factory.
-     * @param ContainerInterface $container The container used to resolve dependencies
      * @return UriFactoryInterface The standard Uri Factory
      */
-    public function getUriFactory(ContainerInterface $container): UriFactoryInterface
+    public function getUriFactory(): UriFactoryInterface
     {
-        return $container->get(HttpFactoryInterface::class);
+        return new UriFactory();
     }
 }

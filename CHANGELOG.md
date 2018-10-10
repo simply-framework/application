@@ -6,11 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [0.2.1] - 2018-10-09
+## [0.2.1] - 2018-10-10
 ### Changed
 - The library now depends on version `^2.0` of the `zendframework/zend-diactoros`
-- The `DiactorosHttpFactory` now wraps the factories provided by the library itself
+- The `ApplicationProvider` now directly instantiates the PSR-17 factories provided by the updated Diactoros library
 - Improved some tests as result of mutation testing
+
+### Removed
+- The `HttpFactoryInterface` no longer implements the PSR-17 interfaces, and only provides the method
+  `createServerRequestFromGlobals`.
 
 ## [0.2.0] - 2018-07-31
 ### Added

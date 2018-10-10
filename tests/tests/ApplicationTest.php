@@ -9,13 +9,15 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Simply\Application\Handler\CallbackHandler;
-use Simply\Application\HttpFactory\DiactorosHttpFactory;
 use Simply\Application\HttpFactory\HttpFactoryInterface;
 use Simply\Container\Container;
 use Simply\Container\ContainerBuilder;
 use Simply\Router\RouteDefinition;
 use Simply\Router\RouteDefinitionProvider;
 use Simply\Router\Router;
+use Zend\Diactoros\ResponseFactory;
+use Zend\Diactoros\ServerRequestFactory;
+use Zend\Diactoros\StreamFactory;
 
 /**
  * ApplicationTest.
@@ -41,10 +43,15 @@ class ApplicationTest extends TestCase
     protected function setUp()
     {
         $this->container = null;
-        $this->httpFactory = $this->getHttpFactory();
         $this->serverApi = null;
         $this->sentHeaders = [];
         $this->sentOutput = '';
+        $this->nextRequest = null;
+
+        $this->httpFactory = $this->createMock(HttpFactoryInterface::class);
+        $this->httpFactory->method('createServerRequestFromGlobals')->willReturnCallback(function () {
+            return $this->nextRequest;
+        });
     }
 
     public function testSuccessfulRouting()
@@ -197,6 +204,24 @@ class ApplicationTest extends TestCase
         $this->assertSame('123', $this->sentOutput);
     }
 
+    public function testSmallRewindedBody()
+    {
+        $stream = fopen('php://memory', 'wb+');
+        fwrite($stream, '0');
+
+        $response = (new ResponseFactory())->createResponse()
+            ->withBody((new StreamFactory())->createStreamFromResource($stream));
+
+        $this->buildApplication([
+            ['GET', '/path/', $this->getHandler($response)]
+        ]);
+
+        $this->makeRequest('GET', '/path/');
+
+        $this->assertContains('Content-Length: 1', $this->sentHeaders);
+        $this->assertSame('0', $this->sentOutput);
+    }
+
     public function testUnmockedApplication()
     {
         $provider = new RouteDefinitionProvider();
@@ -208,8 +233,8 @@ class ApplicationTest extends TestCase
         $builder->registerProvider(new ApplicationProvider());
 
         $handler = new CallbackHandler(function () {
-            return $this->httpFactory->createResponse()
-                ->withBody($this->httpFactory->createStream('Expected Output'));
+            return (new ResponseFactory())->createResponse()
+                ->withBody((new StreamFactory())->createStream('Expected Output'));
         });
 
         $builder->registerConfiguration([
@@ -234,7 +259,7 @@ class ApplicationTest extends TestCase
 
     private function makeRequest(string $method, string $path)
     {
-        $this->nextRequest = $this->httpFactory->createServerRequest($method, $path);
+        $this->nextRequest = (new ServerRequestFactory())->createServerRequest($method, $path);
         $this->container->get(Application::class)->run();
     }
 
@@ -300,19 +325,6 @@ class ApplicationTest extends TestCase
         return $client;
     }
 
-    private function getHttpFactory(): HttpFactoryInterface
-    {
-        $this->httpFactory = $this->getMockBuilder(DiactorosHttpFactory::class)
-            ->setMethods(['createServerRequestFromGlobals'])
-            ->getMock();
-
-        $this->httpFactory->method('createServerRequestFromGlobals')->willReturnCallback(function () {
-            return $this->nextRequest;
-        });
-
-        return $this->httpFactory;
-    }
-
     /**
      * @param Response|string $response
      * @return MockObject|RequestHandlerInterface
@@ -334,8 +346,8 @@ class ApplicationTest extends TestCase
 
     private function getResponse(string $body, array $headers = null): Response
     {
-        $response = $this->httpFactory->createResponse();
-        $response = $response->withBody($this->httpFactory->createStream($body));
+        $response = (new ResponseFactory())->createResponse();
+        $response = $response->withBody((new StreamFactory())->createStream($body));
 
         if ($headers === null) {
             $headers = [
