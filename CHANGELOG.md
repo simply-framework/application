@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.2.3] - 2018-12-18
+### Added
+- Added a method `HttpClient::enableContentLength()` to enable automatic adding of `Content-Length` header
+
+### Changed
+- The `HttpClient` will no longer automatically add the `Content-Length` header unless explicitly requested.
+
+### Fixed
+- The `HttpClient` will no longer call the `ServerApi::output()` with empty content
+
 ## [0.2.2] - 2018-10-17
 ### Changed
 - Now depends on version `^0.3.0` of the `simply/container` library

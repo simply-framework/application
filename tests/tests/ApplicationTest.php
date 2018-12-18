@@ -64,6 +64,7 @@ class ApplicationTest extends TestCase
 
         $this->assertSame('Correct Output', $this->sentOutput);
         $this->assertContains('Content-Type: text/plain; charset=utf-8', $this->sentHeaders);
+        $this->assertNotContains('Content-Length', implode("\n", $this->sentHeaders));
     }
 
     public function testCallingApplicationTwice()
@@ -180,6 +181,8 @@ class ApplicationTest extends TestCase
             ['GET', '/limited/', $handler],
         ]);
 
+        $this->getContainerHttpClient()->enableContentLength();
+        $this->getContainerHttpClient()->setResponseChunkSize(3);
         $this->makeRequest('GET', '/limited/');
 
         $this->assertContains('Content-Length: 4', $this->sentHeaders);
@@ -216,6 +219,7 @@ class ApplicationTest extends TestCase
             ['GET', '/path/', $this->getHandler($response)],
         ]);
 
+        $this->getContainerHttpClient()->enableContentLength();
         $this->makeRequest('GET', '/path/');
 
         $this->assertContains('Content-Length: 1', $this->sentHeaders);
@@ -260,7 +264,7 @@ class ApplicationTest extends TestCase
     private function makeRequest(string $method, string $path)
     {
         $this->nextRequest = (new ServerRequestFactory())->createServerRequest($method, $path);
-        $this->container->get(Application::class)->run();
+        $this->getContainerApplication()->run();
     }
 
     private function buildApplication(array $routes): void
@@ -360,5 +364,15 @@ class ApplicationTest extends TestCase
         }
 
         return $response;
+    }
+
+    private function getContainerApplication(): Application
+    {
+        return $this->container->get(Application::class);
+    }
+
+    private function getContainerHttpClient(): HttpClient
+    {
+        return $this->container->get(HttpClient::class);
     }
 }

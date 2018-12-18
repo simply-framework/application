@@ -21,6 +21,9 @@ class HttpClient
     /** @var ServerApi The api used to actually communicate to the browser */
     private $serverApi;
 
+    /** @var bool Whether to automatically detect content length */
+    private $contentLength;
+
     /**
      * HttpClient constructor.
      */
@@ -29,6 +32,7 @@ class HttpClient
         $this->omitBody = false;
         $this->chunkSize = 8 * 1024;
         $this->serverApi = new ServerApi();
+        $this->contentLength = false;
     }
 
     /**
@@ -51,6 +55,15 @@ class HttpClient
         }
 
         $this->chunkSize = $bytes;
+    }
+
+    /**
+     * Enables automatic detection of content length and adding the appropriate header.
+     * @param bool $enable True to enable, false to disable
+     */
+    public function enableContentLength(bool $enable = true): void
+    {
+        $this->contentLength = $enable;
     }
 
     /**
@@ -107,6 +120,10 @@ class HttpClient
      */
     private function detectLength(ResponseInterface $response): ?int
     {
+        if (! $this->contentLength) {
+            return null;
+        }
+
         if ($response->hasHeader('Content-Length')) {
             $lengthHeader = $response->getHeader('Content-Length');
             return array_shift($lengthHeader);
@@ -154,7 +171,10 @@ class HttpClient
         while (!$body->eof()) {
             $read = $length === null ? $this->chunkSize : min($this->chunkSize, $length - $bytes);
             $output = $body->read($read);
-            $this->serverApi->output($output);
+
+            if ($output !== '') {
+                $this->serverApi->output($output);
+            }
 
             $bytes += \strlen($output);
 
